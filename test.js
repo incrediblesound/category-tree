@@ -16,20 +16,23 @@ function makePath(tree, destination) {
       track[root].pop();
       return;
     } else {
-      forEach(keys, function(key) {
-        if(key == destination) {
-          track[root].push(destination);
-          if(!done){ results.result = track[root]; done = true; }
-          return;
-        } else {
-          track[root].push(key);
-          return traverse(tree[key], destination, root);
-        }
-      });
-      if(!done){ track[root].pop();}
-      return;
+        forEach(keys, function(key) {
+          if(!done) {
+          if(key == destination) {
+            track[root].push(destination);
+            if(!done){ results.result = track[root]; done = true; }
+            return;
+          } else {
+            track[root].push(key);
+            console.log(track[root]);
+            return traverse(tree[key], destination, root);
+          }
+        } else { return }
+        });
+        if(!done){ track[root].pop(); }
+        return;
+      }
     }
-  }
   return results.result;
 }
 
@@ -39,7 +42,7 @@ function forEach(array, fn) {
   }
 }
 
-var productTree = {products:{household:{appliance:{},electronics:{}},office:{computers:{},desk:{pens:{},stationary:{}}}}};
+var productTree = {products:{household:{appliance:{},electronics:{sound_video:{},security:{}}},office:{computers:{},desk:{pens:{},stationary:{}}}}};
 
 var x = makePath(productTree,'stationary');
 console.log(x);

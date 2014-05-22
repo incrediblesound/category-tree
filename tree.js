@@ -3,7 +3,6 @@ exports.autoCat = function(schema) {
   schema.pre('save', function (next,data, cb) {
     var names = treeData.levelNames;
     var path = makePath(treeData.tree, data);
-    console.log(treeData.tree);
     var me = this;
     forEach(path, function(cat, i) {
       me[names[i]] = cat;
@@ -24,6 +23,7 @@ var treeData = {
 }
 
 function makePath(tree, destination) {
+    
     var results = {result: []},
         done = false,
         track = {};
@@ -31,7 +31,7 @@ function makePath(tree, destination) {
   var roots = Object.keys(tree);
   forEach(roots, function (root) {
     track[root] = [];
-    traverse(tree[root], destination, root)
+    traverse(tree[root], destination, root);
   });
     
     function traverse(tree, destination, root) {
@@ -40,20 +40,22 @@ function makePath(tree, destination) {
       track[root].pop();
       return;
     } else {
-      forEach(keys, function(key) {
-        if(key == destination) {
-          track[root].push(destination);
-          if(!done){ results.result = track[root]; done = true; }
-          return;
-        } else {
-          track[root].push(key);
-          return traverse(tree[key], destination, root);
-        }
-      });
-      if(!done){ track[root].pop();}
-      return;
+        forEach(keys, function(key) {
+          if(!done) {
+          if(key == destination) {
+            track[root].push(destination);
+            if(!done){ results.result = track[root]; done = true; }
+            return;
+          } else {
+            track[root].push(key);
+            return traverse(tree[key], destination, root);
+          }
+        } else { return }
+        });
+        if(!done){ track[root].pop(); }
+        return;
+      }
     }
-  }
   return results.result;
 }
 
