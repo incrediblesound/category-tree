@@ -1,29 +1,5 @@
-
-exports.autoCat = function(schema) {
-  schema.pre('save', function (next,data, cb) {
-    var names = treeData.levelNames;
-    var path = makePath(treeData.tree, data);
-    console.log(treeData.tree);
-    var me = this;
-    forEach(path, function(cat, i) {
-      me[names[i]] = cat;
-    })
-    next(cb);
-  })
-}
-
-exports.setTreeData = function(tree, names) {
-  treeData.tree = tree;
-  treeData.levelNames = names;
-  return;
-}
-
-var treeData = {
-  tree: {},
-  levelNames: [],
-}
-
 function makePath(tree, destination) {
+    
     var results = {result: []},
         done = false,
         track = {};
@@ -31,7 +7,7 @@ function makePath(tree, destination) {
   var roots = Object.keys(tree);
   forEach(roots, function (root) {
     track[root] = [];
-    traverse(tree[root], destination, root)
+    traverse(tree[root], destination, root);
   });
     
     function traverse(tree, destination, root) {
@@ -63,4 +39,7 @@ function forEach(array, fn) {
   }
 }
 
+var productTree = {products:{household:{appliance:{},electronics:{}},office:{computers:{},desk:{pens:{},stationary:{}}}}};
 
+var x = makePath(productTree,'stationary');
+console.log(x);

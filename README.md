@@ -1,10 +1,12 @@
 Category Tree
 =============
 
+<strong>0.0.2</strong> Fixed makePath algorithm
+
 This module automates the saving of specific categories for items based on the terminal category. The module finds the correct path through a data tree to the terminal category and sets the document properties according to that path. For example, if we set the module data thusly:
 
 ```javascript
-var productTree = {products:{household:{appliance:{},electronics:{}},office:{computers:{},desk:{}}}};
+var productTree = {products:{household:{appliance:{},electronics:{}},office:{computers:{},desk:{pens:{},stationary:{}}}}};
 var names = ['department','category','subCategory'];
 tree.setTreeData(productTree, names);
 ```
@@ -14,16 +16,16 @@ new product({
     name: 'Letter Paper',
     description: 'High Quality Paper',
     price: '10$ per pack'
-  }).save('desk', function(err, data) { //the 'desk' parameter in the save function indicates terminal category
+  }).save('stationary', function(err, data) { //the 'stationary' parameter in the save function indicates terminal category
     if(err) console.log(err);
     res.render('index');
   })
 ```
 And the following object is saved to the database:
 ```javascript
-{ subCategory: 'desk',
-  category: 'office',
-  department: 'household',
+{ subCategory: 'stationary',
+  category: 'desk',
+  department: 'office',
   name: 'Letter Paper',
   description: 'High Quality Paper',
   price: '10$ per pack',
@@ -58,7 +60,7 @@ Make sure to set the category tree and category names to the module's data:
 ```javascript
 var tree = require('category-tree');
 
-var productTree = {products:{household:{appliance:{},electronics:{}},office:{computers:{},desk:{}}}};
+var productTree = {products:{household:{appliance:{},electronics:{}},office:{computers:{},desk:{pens:{},stationary:{}}}}};
 var names = ['department','category','subCategory'];
 
 tree.setTreeData(productTree, names);
