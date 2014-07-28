@@ -1,7 +1,8 @@
 Category Tree
 =============
 
-<strong>0.0.2</strong> Fixed makePath algorithm
+<strong>0.0.2</strong> Fixed makePath algorithm    
+<strong>0.0.4</strong> Clean up and comment code    
 
 This module automates the saving of specific categories for items based on the terminal category. The module finds the correct path through a data tree to the terminal category and sets the document properties according to that path. For example, if we set the module data thusly:
 

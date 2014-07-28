@@ -1,6 +1,6 @@
 {
     "name": "category-tree",
-    "version": "0.0.3",
+    "version": "0.0.4",
     "description": "Mongoose middleware to save all categories based on the terminal category",
     "main": "tree.js",
     "author": "James H. Edwards",

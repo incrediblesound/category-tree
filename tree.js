@@ -1,68 +1,87 @@
 
 exports.autoCat = function(schema) {
-  schema.pre('save', function (next,data, cb) {
+  schema.pre('save', function (next, target, cb) {
+    //store the category labels which must correspond to schema properties
     var names = treeData.levelNames;
-    var path = makePath(treeData.tree, data);
-    var me = this;
+    //get the specific categories for this item
+    var path = makePath(treeData.tree, target);
+    //'this' refers to the schema of the item being saved
+    var item = this; 
     forEach(path, function(cat, i) {
-      me[names[i]] = cat;
+      //set each category property of the item in order from general to specific
+      item[names[i]] = cat;
     })
     next(cb);
   })
-}
+};
 
 exports.setTreeData = function(tree, names) {
   treeData.tree = tree;
   treeData.levelNames = names;
   return;
-}
+};
 
 var treeData = {
   tree: {},
   levelNames: [],
-}
+};
 
-function makePath(tree, destination) {
+function makePath(tree, target) {
     
-    var results = {result: []},
-        done = false,
-        track = {};
+  var result,
+      done = false,
+      path = {};
 
+  function traverse(tree, target, root) {
+    var keys = Object.keys(tree);
+    forEach(keys, function(key) {
+      if (!done) {
+        if (key === target) {
+          //if we found our target push it to the path
+          path[root].push(target);
+          //set result to the completed path
+          result = path[root];
+          //set done to true to exit the search
+          done = true; 
+          return;
+        } else {
+          //if the node does not match we need to check for children
+          var newRoot = tree[key];
+          if(Object.keys(newRoot).length > 0) {
+            //if node has children, push the key into our path and check the children for our target
+            path[root].push(key);
+            return traverse(tree[key], target, root);  
+          }
+          //no children means our search of this branch is over
+          return;
+        }
+      } 
+    });
+    //if we leave our for loop but we are not done that means we failed to find our target
+    //in this branch, as a result we need to pop each node out of our path before we return
+    if (!done){ 
+      path[root].pop(); 
+    }
+    return;
+  };
+
+  //set an array of the root nodes of our product tree. These are super-categories that are
+  //not saved in the item schema, possibly representing types of items, i.e. different schemas.
   var roots = Object.keys(tree);
   forEach(roots, function (root) {
-    track[root] = [];
-    traverse(tree[root], destination, root);
+    path[root] = [];
+    //traverse our tree, going through each root node until the target leaf is found in the
+    //tree defined by that root node.
+    traverse(tree[root], target, root);
   });
-    
-    function traverse(tree, destination, root) {
-      var keys = Object.keys(tree);
-    if(keys.length === 0) {
-      track[root].pop();
-      return;
-    } else {
-        forEach(keys, function(key) {
-          if(!done) {
-          if(key == destination) {
-            track[root].push(destination);
-            if(!done){ results.result = track[root]; done = true; }
-            return;
-          } else {
-            track[root].push(key);
-            return traverse(tree[key], destination, root);
-          }
-        } else { return }
-        });
-        if(!done){ track[root].pop(); }
-        return;
-      }
-    }
-  return results.result;
-}
+
+  return result;
+};
 
 function forEach(array, fn) {
   for(var i = 0; i < array.length; ++i) {
     fn(array[i], i);
   }
-}
+};
 
 
